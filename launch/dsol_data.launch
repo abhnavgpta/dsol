@@ -8,15 +8,19 @@
 
     <arg name="tbb" default="1"/>
     <arg name="log" default="5"/>
-    <arg name="vis" default="true"/>
+    <arg name="vis" default="false"/>
     <arg name="freq" default="10"/>
     <arg name="save" default=""/>
-    <arg name="wait_ms" default="10"/>
+    <arg name="wait_ms" default="8"/>
 
-    <arg name="data" default="vk2"/>
-    <arg name="data_dir" default="/home/chao/Workspace/dataset/vkitti/Scene01/clone"/>
+    <arg name="data" default="d455"/>
+
+    <!-- <arg name="data_dir" default="/home/chao/Workspace/dataset/vkitti/Scene01/clone"/> -->
     <!-- <arg name="data_dir" default="/home/chao/Workspace/dataset/kitti/dataset/sequences/00"/> -->
-    <!-- <arg name="data_dir" default="/home/chao/Workspace/dataset/tartan_air/gascola/Easy/P003"/> -->
+    <!--<arg name="data_dir" default="/media/psf/robo/catkin_ws/src/dsol/tartan_air/P001"/>-->
+    <!--<arg name="data_dir" default="/media/psf/robo/bagfiles/realsense/indoor_2"/>-->
+    <arg name="data_dir" default="/media/psf/robo/bagfiles/realsense/car_loop_onboard"/>
+
     <arg name="data_max_depth" default="100.0"/>
     <arg name="cloud_max_depth" default="50.0"/>
     <arg name="motion_alpha" default="0.5"/>
@@ -40,5 +44,10 @@
         <param name="start" type="int" value="$(arg start)"/>
         <param name="end" type="int" value="$(arg end)"/>
         <param name="reverse" type="bool" value="$(arg reverse)"/>
+
     </node>
+
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find dsol)/launch/dsol.rviz" /> 
+
 </launch>
+

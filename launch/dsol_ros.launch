@@ -1,0 +1,98 @@
+<launch>
+
+  <!--Use below when running on actual car. Don't need to use it with rosbag-->
+  <!-- Launch realsense camera -->  
+    <!--<include file="$(find realsense2_camera)/launch/rs_camera.launch">-->
+      <!--<arg name="enable_infra1"       value="true" />-->
+      <!--<arg name="enable_infra2"       value="true" />-->
+      <!--<arg name="infra_fps"           value="60"   />-->
+    <!--</include>-->
+  <!-- Launch teleop -->
+  <!--<arg name="racecar_version" default="racecar-v2" />-->
+  <!--<include file="$(find racecar)/launch/includes/$(arg racecar_version)-teleop.launch.xml">-->
+    <!--<arg name="racecar_version" value="$(arg racecar_version)" />-->
+  <!--</include>-->
+
+
+  <!-- Launch DSOL -->  
+    <arg name="debug" default="false"/>
+    <env if="$(arg debug)" name="ROSCONSOLE_CONFIG_FILE" value="$(find dsol)/launch/debug.conf"/>
+
+    <arg name="start" default="0"/>
+    <arg name="end" default="0"/>
+    <arg name="reverse" default="false"/>
+
+    <arg name="tbb" default="1"/>
+    <arg name="log" default="5"/>
+    <arg name="vis" default="false"/>
+    <arg name="freq" default="10"/>
+    <arg name="save" default=""/>
+    <arg name="wait_ms" default="8"/>
+
+    <arg name="data" default="d455"/> 
+
+    <arg name="data_max_depth" default="100.0"/>
+    <arg name="cloud_max_depth" default="50.0"/>
+    <arg name="motion_alpha" default="0.5"/>
+
+    <arg name="buff_count" default="1"/>
+
+
+    <!--Use below for simulation-->
+    <!--<arg name="cam1_data" default="/racecar01/realsense/infra1/image_raw"/>-->
+    <!--<arg name="cam2_data" default="/racecar01/realsense/infra2/image_raw"/>-->
+    <!--<arg name="fix_frame" default="/racecar01/map"/>-->
+    <arg name="cam1_data" default="/camera/infra1/image_rect_raw"/>
+    <arg name="cam2_data" default="/camera/infra2/image_rect_raw"/>
+    <arg name="fix_frame" default="fixed"/>
+
+    <!--Camera Intrinsics parameters-->
+    <!--const cv::Mat intrin({1, 5}, {430.1014404296875, 430.1014404296875, 420.8174133300781, 241.85072326660156, 0.09493});-->
+    <arg name="fx" default="430.1014404296875" />
+    <arg name="fy" default="430.1014404296875" />
+    <arg name="cx" default="420.8174133300781" />
+    <arg name="cy" default="241.85072326660156" />
+    <arg name="bs" default="0.09493" />
+
+    <node pkg="dsol" type="sv_dsol_node_ros" name="dsol_data" output="screen">
+        <rosparam command="load" file="$(find dsol)/config/dsol.yaml"/>
+        <rosparam command="load" file="$(find dsol)/config/dsol_$(arg data).yaml"/> 
+
+        <param name="tbb" type="int" value="$(arg tbb)"/>
+        <param name="log" type="int" value="$(arg log)"/>
+        <param name="vis" type="bool" value="$(arg vis)"/>
+        <param name="freq" type="double" value="$(arg freq)"/>
+        <param name="save" type="string" value="$(arg save)"/>
+        <param name="wait_ms" type="int" value="$(arg wait_ms)"/>
+
+        <param name="data_max_depth" type="double" value="$(arg data_max_depth)"/>
+        <param name="cloud_max_depth" type="double" value="$(arg cloud_max_depth)"/>
+        <param name="motion_alpha" type="double" value="$(arg motion_alpha)"/>
+
+        <param name="start" type="int" value="$(arg start)"/>
+        <param name="end" type="int" value="$(arg end)"/>
+        <param name="reverse" type="bool" value="$(arg reverse)"/>
+
+        <param name="buff_count" type="int" value="$(arg buff_count)"/>
+        <param name="cam1_data" type="str" value="$(arg cam1_data)"/>
+        <param name="cam2_data" type="str" value="$(arg cam2_data)"/>
+        <param name="fix_frame" type="str" value="$(arg fix_frame)"/>
+        <param name="fx" type="double" value="$(arg fx)"/>
+        <param name="fy" type="double" value="$(arg fy)"/>
+        <param name="cx" type="double" value="$(arg cx)"/>
+        <param name="cy" type="double" value="$(arg cy)"/>
+        <param name="bs" type="double" value="$(arg bs)"/>
+    </node>
+
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find dsol)/launch/dsol.rviz" /> 
+
+    <!--Use sim time when using with rosbag to make it work with other ros nodes that might be running alongside-->
+    <!--IMPORTANT : Also have to use "clock" arg with rosbag play  -->
+    <!--We are basically inserting a TF online in the stream of TFs with older timestamps. Need to use sim time. Octomap should use "map" as frame_id-->
+    <!--You don't have to use below when using gazebo simulation. Only with rosbag-->
+    <param name="/use_sim_time" value="true" />
+    <node pkg="tf" type="static_transform_publisher" name="map_link_broadcaster" args="0 0 0 0 0 1.57 fixed map 100" />
+
+</launch>
+
+

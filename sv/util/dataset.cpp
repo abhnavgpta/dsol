@@ -14,15 +14,9 @@
 #include <opencv2/imgcodecs.hpp>  // imread
 #include <opencv2/imgproc.hpp>    // threashold
 
-#ifndef XTENSOR_FOUND
-#define XTENSOR_FOUND 0
-#endif
-
 // Conditionallly include xtensor if package found
-#if XTENSOR_FOUND
 #include <xtensor/xarray.hpp>
 #include <xtensor/xnpy.hpp>
-#endif
 
 namespace sv {
 
@@ -520,7 +514,6 @@ cv::Mat TartanAir::GetImpl(std::string_view dtype, int i, int cam) const {
   }
 
   if (dtype == DataType::kDepth) {
-#if XTENSOR_FOUND
     const auto& files = files_.at(DataType::kDepth);
     if (ind >= files.size()) return {};
     const auto raw = xt::load_npy<float>(files.at(ind));
@@ -536,10 +529,6 @@ cv::Mat TartanAir::GetImpl(std::string_view dtype, int i, int cam) const {
       }
     }
     return depth;
-#else
-    LOG(WARNING) << "xtensor not found, unable to read npy, return empty depth";
-    return {};
-#endif
   }
 
   if (dtype == DataType::kIntrin) {

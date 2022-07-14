@@ -23,6 +23,10 @@ OdomCfg ReadOdomCfg(const ros::NodeHandle& pnh);
 
 Camera MakeCamera(const sensor_msgs::CameraInfo& cinfo_msg);
 
+void Keyframe2CloudCameraFrame(const Keyframe& keyframe,
+                    sensor_msgs::PointCloud2& cloud,
+                    double max_depth,
+                    int offset = 0);
 void Keyframe2Cloud(const Keyframe& kefyrame,
                     sensor_msgs::PointCloud2& cloud,
                     double max_depth,

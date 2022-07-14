@@ -7,17 +7,21 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 
 if __name__ == '__main__':
-    bag_file = "/home/chao/Dropbox/Data/d455/20220307_172336.bag"
-    bag_name = "indoor_1"
+    bag_file = "/media/psf/robo/bagfiles/car_loop_onboard.bag"
+    bag_name = "car_loop_onboard"
     bag = rosbag.Bag(bag_file, "r")
     bridge = CvBridge()
     count = 0
+    # topics = [
+        # "/device_0/sensor_0/Infrared_1/image/data",
+        # "/device_0/sensor_0/Infrared_2/image/data"
+    # ]
     topics = [
-        "/device_0/sensor_0/Infrared_1/image/data",
-        "/device_0/sensor_0/Infrared_2/image/data"
+        "/camera/infra1/image_rect_raw",
+        "/camera/infra2/image_rect_raw"
     ]
 
-    data_dir = Path("/home/chao/Documents/realsense") / bag_name
+    data_dir = Path("/media/psf/robo/bagfiles/realsense") / bag_name
     left_dir = data_dir / "infra1"
     right_dir = data_dir / "infra2"
     left_dir.mkdir(parents=True, exist_ok=True)

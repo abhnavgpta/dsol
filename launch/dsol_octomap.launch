@@ -1,0 +1,25 @@
+<launch>
+
+  <!-- Launch dsol ros node -->  
+    <include file="dsol_ros.launch">
+    </include>
+
+    <!--Launch the Octomap-->
+    <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+        <!--coarse resolution for speed up-->
+        <param name="resolution" value="0.2" />
+        <!--fixed map frame (set to 'map' if SLAM or localization running!)-->
+        <param name="frame_id" type="string" value="map" />
+        <!--data source to integrate (PointCloud2)-->
+        <remap from="cloud_in" to="/dsol_data/points" />
+        <!--maximum range to integrate (speedup!)-->
+        <param name="sensor_model/max_range" value="1" />
+
+        <param name="pointcloud_max_z" value="10.0" />
+        <param name="pointcloud_min_z" value="-10.0" />
+
+        <param name="occupancy_max_z" value="50.0" />
+        <param name="occupancy_min_z" value="-50.0" />
+    </node>
+
+</launch>

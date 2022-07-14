@@ -4,6 +4,7 @@
 #include <absl/time/time.h>
 
 #include <shared_mutex>
+#include <mutex>
 #include <string_view>
 
 #include "sv/util/stats.h"

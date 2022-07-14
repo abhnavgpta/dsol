@@ -82,6 +82,46 @@ Camera MakeCamera(const sensor_msgs::CameraInfo& cinfo_msg) {
   return {size, fc, cinfo_msg.P[3] / K[0]};
 }
 
+void Keyframe2CloudCameraFrame(const Keyframe& keyframe,
+                    sensor_msgs::PointCloud2& cloud,
+                    double max_depth,
+                    int offset) {
+  const auto& points = keyframe.points();
+  const auto& patches = keyframe.patches().front();
+  const auto grid_size = points.cvsize();
+
+  const auto total_size = offset + grid_size.area();
+  cloud.data.resize(total_size * cloud.point_step);
+  cloud.height = 1;
+  cloud.width = total_size;
+
+  for (int gr = 0; gr < points.rows(); ++gr) {
+    for (int gc = 0; gc < points.cols(); ++gc) {
+      const auto i = offset + gr * grid_size.width + gc;
+      auto* ptr =
+          reinterpret_cast<float*>(cloud.data.data() + i * cloud.point_step);
+
+      const auto& point = points.at(gr, gc);
+      // Only draw points with max info and within max depth
+      if (!point.InfoMax() || (1.0 / point.idepth()) > max_depth) {
+        ptr[0] = ptr[1] = ptr[2] = kNaNF;
+        continue;
+      }
+      CHECK(point.PixelOk());
+      CHECK(point.DepthOk());
+
+      // transform to fixed frame
+      const Eigen::Vector3f p_w = (point.pt()).cast<float>();
+      const auto& patch = patches.at(gr, gc);
+
+      ptr[0] = p_w.x();
+      ptr[1] = p_w.y();
+      ptr[2] = p_w.z();
+      ptr[3] = static_cast<float>(patch.vals[0] / 255.0);
+    }
+  }
+}
+
 void Keyframe2Cloud(const Keyframe& keyframe,
                     sensor_msgs::PointCloud2& cloud,
                     double max_depth,

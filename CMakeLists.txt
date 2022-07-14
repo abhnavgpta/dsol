@@ -31,15 +31,15 @@ find_package(
              visualization_msgs)
 
 find_package(TBB REQUIRED)
-find_package(fmt REQUIRED)
+#find_package(fmt REQUIRED)
 find_package(glog REQUIRED)
-find_package(absl REQUIRED)
+#find_package(absl REQUIRED)
 find_package(Boost REQUIRED) # circular buffer
 
 find_package(Eigen3 REQUIRED)
 find_package(Sophus REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(xtensor) # reading npy
+#find_package(xtensor) # reading npy
 
 find_package(GTest REQUIRED)
 find_package(benchmark REQUIRED)
@@ -54,4 +54,7 @@ if(BUILD_ROS)
 endif()
 
 enable_testing()
+add_subdirectory(abseil-cpp)
+add_subdirectory(fmt-8.0.1)
+
 add_subdirectory(sv)

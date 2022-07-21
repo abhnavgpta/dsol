@@ -8,22 +8,24 @@
 
     <arg name="tbb" default="1"/>
     <arg name="log" default="5"/>
-    <arg name="vis" default="true"/>
+    <arg name="vis" default="false"/>
     <arg name="freq" default="10"/>
     <arg name="save" default=""/>
     <arg name="wait_ms" default="8"/>
 
-    <arg name="data" default="tta"/>
+    <arg name="data" default="d455"/>
 
     <!-- <arg name="data_dir" default="/home/chao/Workspace/dataset/vkitti/Scene01/clone"/> -->
     <!-- <arg name="data_dir" default="/home/chao/Workspace/dataset/kitti/dataset/sequences/00"/> -->
-    <arg name="data_dir" default="/media/psf/robo/catkin_ws/src/dsol/tartan_air/P001"/>
+    <!--<arg name="data_dir" default="/media/psf/robo/catkin_ws/src/dsol/tartan_air/P001"/>-->
+    <arg name="data_dir" default="/media/psf/robo/bagfiles/realsense/indoor_1"/>
 
     <arg name="data_max_depth" default="100.0"/>
     <arg name="cloud_max_depth" default="50.0"/>
     <arg name="motion_alpha" default="0.5"/>
 
-    <node pkg="dsol" type="sv_dsol_node_data" name="dsol_data" output="screen">
+    <node pkg="dsol" type="sv_dsol_node_ros" name="dsol_data" output="screen">
+    <!--<node pkg="dsol" type="sv_dsol_node_data" name="dsol_data" output="screen">-->
         <rosparam command="load" file="$(find dsol)/config/dsol.yaml"/>
         <rosparam command="load" file="$(find dsol)/config/dsol_$(arg data).yaml"/>
 
@@ -44,7 +46,7 @@
         <param name="reverse" type="bool" value="$(arg reverse)"/>
     </node>
 
-     <!--<node type="rviz" name="rviz" pkg="rviz" args="-d $(find dsol)/launch/dsol.rviz" /> -->
+     <node type="rviz" name="rviz" pkg="rviz" args="-d $(find dsol)/launch/dsol.rviz" /> 
 
 </launch>
 
